@@ -1,13 +1,21 @@
+import Row from "../Row/row";
+
 const headers = ["ID", "Name", "Surname", "Patronymic", "Datebirth", "Group"];
 
 export default class Table {
-  tableElement;
+  element;
+  #rowsData;
 
-  constructor() {
-    this.tableElement = this.createTable();
+  constructor(rows) {
+    this.#rowsData = rows;
+    this.element = this.getTable();
+
+    this.#rowsData.forEach((data) => {
+      this.addRow(data);
+    });
   }
 
-  createTable() {
+  getTable() {
     const table = document.createElement("div");
     table.classList.add("table");
 
@@ -24,9 +32,9 @@ export default class Table {
     return table;
   }
 
-  addStudent(student) {
-    this.tableElement.appendChild(student);
-    student.classList.add("table__row");
+  addRow(rowData) {
+    const row = new Row(rowData);
+    this.element.appendChild(row.element);
   }
 }
 
