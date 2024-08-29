@@ -1,22 +1,20 @@
 export default class Header {
-  headerElement;
+  element;
 
   constructor() {
-    this.headerElement = this.getHeader();
-  }
-
-  /**
-   * @returns {HTMLDivElement}
-   */
+    this.element = this.getHeader();
+	}
+	
   getHeader() {
     const header = document.createElement("div");
-    header.classList.add("header");
-
-    const h1 = document.createElement("h1");
-    h1.textContent = "Student class";
+		const h1 = document.createElement("h1");
+		
+		header.classList.add("header");
     h1.classList.add("header__title");
 
-    header.appendChild(h1);
+    h1.textContent = "Student class";
+		header.appendChild(h1);
+		
     return header;
   }
 }
