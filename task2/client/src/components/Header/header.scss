@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  position: fixed;
+  align-items: center;
+
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 10rem;
+  border-bottom: 1px solid white;
+
+  padding: 0 5rem;
+}
+
+.header__text {
+  font-size: 20rem;
+}
+
