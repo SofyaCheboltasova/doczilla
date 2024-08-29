@@ -5,6 +5,7 @@ public class Graph {
   private final Queue<File> queue = new ArrayDeque<>();;
   private final Map<File, Color> coloredGraph = new HashMap<>();
   public final Map<File, ArrayList<File>> graph = new HashMap<>();
+  public final Stack<File> cycle = new Stack<>();
 
   private static enum Color {
     BLACK, GRAY, WHITE
@@ -12,9 +13,11 @@ public class Graph {
 
   private boolean dfs(File vertex) {
     Color currentColor = coloredGraph.get(vertex);
+    cycle.add(vertex);
 
     switch (currentColor) {
       case BLACK:
+        cycle.pop();
         return true;
       case GRAY:
         return false;
@@ -30,6 +33,7 @@ public class Graph {
     }
     coloredGraph.put(vertex, Color.BLACK);
     queue.add(vertex);
+    cycle.pop();
     return true;
   }
 
@@ -52,7 +56,13 @@ public class Graph {
 
   public ArrayList<File> getSortedGraph() {
     if (hasCycle()) {
-      throw new RuntimeException("Cycle detected");
+      StringBuilder cycleOutput = new StringBuilder("Cycle detected:\n");
+
+      for (File file : cycle) {
+        cycleOutput.append(file.getPath()).append("\n");
+      }
+
+      throw new RuntimeException(cycleOutput.toString());
     }
 
     ArrayList<File> sortedGraph = new ArrayList<>();
