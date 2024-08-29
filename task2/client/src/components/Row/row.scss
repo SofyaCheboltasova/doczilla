@@ -1,0 +1,16 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 2rem;
+
+  &:hover {
+    background-color: #e0e0e02e;
+    cursor: pointer;
+  }
+}
+
