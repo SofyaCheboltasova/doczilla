@@ -1,19 +1,21 @@
+import Button from "../Button/button";
 import Row from "../Row/row";
+import "../../types/types";
 
 const headers = ["ID", "Name", "Surname", "Patronymic", "Datebirth", "Group"];
 
 export default class Table {
   element;
-  #callback;
+  #onAddClick;
   clickedRows = new Map();
 
   /**
    * @param {Student[]} data
    * @param {() => {}} callback
    */
-  constructor(data, callback) {
+  constructor(data, onAddClick) {
     this.element = this.getTable();
-    this.#callback = callback;
+    this.#onAddClick = onAddClick;
 
     if (data.length) {
       data.forEach((data) => this.addRow(data));
@@ -47,28 +49,30 @@ export default class Table {
    * @param {Student | null} data
    */
   addRow(data) {
-    const row = new Row(data, () => this.handleRowClick(row));
+    const row = new Row(data, () => this.handleRowClick(row, data));
     this.element.appendChild(row.element);
   }
 
   /**
    * Click handler for the row.
    * @param {Row} row
+   * @param {Student | null} data
    */
-  handleRowClick(row) {
+  handleRowClick(row, data) {
     row.element.classList.toggle("clicked");
 
-    this.clickedRows.has(row.getId())
-      ? this.clickedRows.delete(row.getId())
-      : this.clickedRows.set(row.getId(), row.getData());
+    this.clickedRows.has(data.id)
+      ? this.clickedRows.delete(data.id)
+      : this.clickedRows.set(data.id, data);
   }
 
   /**
    * Creates Add button and set event handler for it
    */
   initAddButton() {
-    const addButton = this.getAddButton();
-    addButton.addEventListener("click", () => this.handleAddClick());
+    const button = new Button("+", () => this.handleAddClick());
+    this.element.appendChild(button.element);
+    return button;
   }
 
   /**
@@ -79,24 +83,7 @@ export default class Table {
     this.addRow(null);
     this.initAddButton();
 
-    this.#callback();
-  }
-
-  /**
-   * Creates an Add button HTML element.
-   * @returns {HTMLDivElement}
-   */
-  getAddButton() {
-    const button = document.createElement("div");
-    button.classList.add("table__button");
-
-    const plusSign = document.createElement("div");
-    plusSign.classList.add("table__button_plus");
-    plusSign.textContent = "+";
-    button.appendChild(plusSign);
-
-    this.element.appendChild(button);
-    return button;
+    this.#onAddClick();
   }
 }
 
