@@ -5,22 +5,19 @@ import "../../types/types";
 const headers = ["ID", "Name", "Surname", "Patronymic", "Datebirth", "Group"];
 
 export default class Table {
-  element;
-  #onAddClick;
-  clickedRows = new Map();
-
   /**
-   * @param {Student[]} data
-   * @param {() => {}} callback
+   * @param {Student[]} students
+   * @param {() => void} onConfirmClick
    */
-  constructor(data, onAddClick) {
+  constructor(students, onConfirmClick) {
+    this.clickedRows = new Map();
     this.element = this.getTable();
-    this.#onAddClick = onAddClick;
 
-    if (data.length) {
-      data.forEach((data) => this.addRow(data));
+    if (students.length) {
+      students.forEach((student) => this.addFilledRow(student));
     }
-    this.initAddButton();
+
+    this.createAddButton(onConfirmClick);
   }
 
   /**
@@ -45,21 +42,20 @@ export default class Table {
   }
 
   /**
-   * Creates and fills a row for a table.
-   * @param {Student | null} data
+   * Creates a row filled with data.
+   * @param {Student} data
    */
-  addRow(data) {
-    const row = new Row(data, () => this.handleRowClick(row, data));
+  addFilledRow(data) {
+    const row = new Row(data, (data) => this.onRowClick(data), null);
     this.element.appendChild(row.element);
   }
 
   /**
    * Click handler for the row.
-   * @param {Row} row
-   * @param {Student | null} data
+   *  @param {Student} data
    */
-  handleRowClick(row, data) {
-    row.element.classList.toggle("clicked");
+  onRowClick(data) {
+    this.element.classList.toggle("clicked");
 
     this.clickedRows.has(data.id)
       ? this.clickedRows.delete(data.id)
@@ -68,22 +64,30 @@ export default class Table {
 
   /**
    * Creates Add button and set event handler for it
+   * @param {() => void} onConfirmClick
    */
-  initAddButton() {
-    const button = new Button("+", () => this.handleAddClick());
+  createAddButton(onConfirmClick) {
+    const button = new Button("+", () => this.handleAddClick(onConfirmClick));
     this.element.appendChild(button.element);
-    return button;
   }
 
   /**
-   * Handles the click on the Add button
+   * Removes Add button, add an empty row, add Add button
+   * @param {() => void} onConfirmClick
    */
-  handleAddClick() {
+  handleAddClick(onConfirmClick) {
     this.element.removeChild(this.element.lastChild);
-    this.addRow(null);
-    this.initAddButton();
+    this.addEmptyRow(onConfirmClick);
+    this.createAddButton();
+  }
 
-    this.#onAddClick();
+  /**
+   * Creates an empty row with confirm button
+   * @param {() => void} onConfirmClick
+   */
+  addEmptyRow(onConfirmClick) {
+    const row = new Row(null, null, onConfirmClick);
+    this.element.appendChild(row.element);
   }
 }
 
