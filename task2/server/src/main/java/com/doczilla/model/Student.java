@@ -1,14 +1,12 @@
 package com.doczilla.model;
 
-import java.sql.Date;
-
 public class Student {
-    private int id;
+    private Integer id;
     private String name;
     private String surname;
-    private String patronomyc;
-    private Date birthdate;
-    private int group;
+    private String patronymic;
+    private String birthdate;
+    private int groupid;
 
     public int getId() {
         return id;
@@ -22,16 +20,16 @@ public class Student {
         return surname;
     }
 
-    public String getPatronomyc() {
-        return patronomyc;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public Date getBirthdate() {
+    public String getBirthdate() {
         return birthdate;
     }
 
     public int getGroup() {
-        return group;
+        return groupid;
     }
 
     public void setId(int id) {
@@ -46,15 +44,15 @@ public class Student {
         this.surname = surname;
     }
 
-    public void setPatronomyc(String patronomyc) {
-        this.patronomyc = patronomyc;
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    public void setGroup(int groupid) {
+        this.groupid = groupid;
     }
 }

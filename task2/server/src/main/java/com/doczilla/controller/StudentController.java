@@ -1,10 +1,14 @@
 package com.doczilla.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
@@ -38,7 +42,14 @@ public class StudentController implements HttpHandler {
         } else if (path.equals("/students") && "DELETE".equals(exchange.getRequestMethod())) {
             handleDelete(exchange);
         } else if (path.equals("/students") && "POST".equals(exchange.getRequestMethod())) {
+            System.out.println("handle post");
             handlePost(exchange);
+        } else if (path.equals("/students/schema") && "GET".equals(exchange.getRequestMethod())) {
+            try {
+                handleGetSchema(exchange);
+            } catch (IOException | SQLException e) {
+                exchange.sendResponseHeaders(404, -1);
+            }
         } else {
             exchange.sendResponseHeaders(404, -1);
         }
@@ -73,12 +84,36 @@ public class StudentController implements HttpHandler {
     }
 
     protected void handlePost(HttpExchange exchange) throws IOException {
+        InputStream requestBodyStream = exchange.getRequestBody();
+        @SuppressWarnings("resource")
+        String requestBody = new BufferedReader(new InputStreamReader(requestBodyStream))
+                .lines()
+                .collect(Collectors.joining("\n"));
+
+        System.out.println("Request Body: " + requestBody);
+
         try {
-            Student student = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Student.class);
+            Student student = gson.fromJson(requestBody, Student.class);
+            System.out.println("controller:" + student);
+
             studentService.postStudent(student);
             exchange.sendResponseHeaders(201, -1);
         } catch (SQLException e) {
+            System.out.println("handle post error");
+
             exchange.sendResponseHeaders(400, -1);
+        }
+    }
+
+    protected void handleGetSchema(HttpExchange exchange) throws IOException, SQLException {
+        List<Map<String, Object>> schema = this.studentService.getStudentSchema();
+        String response = gson.toJson(schema);
+
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(response.getBytes());
         }
     }
 }
