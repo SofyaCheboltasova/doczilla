@@ -25,10 +25,8 @@ public class StudentRepository {
                 student.setGroup(resultSet.getInt("group"));
                 students.add(student);
             }
-            System.out.println("repo:" + students);
             return students;
         } catch (SQLException e) {
-            System.out.println("repo error:" + e);
             throw new RuntimeException(e.getMessage());
         }
     }

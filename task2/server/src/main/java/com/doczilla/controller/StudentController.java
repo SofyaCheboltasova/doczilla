@@ -34,7 +34,6 @@ public class StudentController implements HttpHandler {
         }
 
         if (path.equals("/students") && "GET".equals(exchange.getRequestMethod())) {
-            System.out.println("allalala");
             handleGet(exchange);
         } else if (path.equals("/students") && "DELETE".equals(exchange.getRequestMethod())) {
             handleDelete(exchange);
@@ -53,7 +52,6 @@ public class StudentController implements HttpHandler {
 
     protected void handleGet(HttpExchange exchange) throws IOException {
         List<Student> students = this.studentService.getStudents();
-        System.out.println(students);
         String response = gson.toJson(students);
 
         exchange.getResponseHeaders().set("Content-Type", "application/json");
