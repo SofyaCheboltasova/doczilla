@@ -1,40 +1,28 @@
+import Button from "../Button/button";
+
 export default class Header {
-  element;
+  /**
+   * @param {() => void} onDeleteClick
+   */
+  constructor(onDeleteClick) {
+    this.element = this.getHeader(onDeleteClick);
+  }
 
-  constructor() {
-    this.element = this.getHeader();
-	}
-
-	/**
-	 * Creates a Delete button element
-	 * @returns {HTMLDivElement}
-	*/
-	getDeleteButton() {
-		const button = document.createElement('div');
-		button.classList.add('header__button_delete', 'hidden');
-
-		const img = document.createElement('img');
-		img.src = '';
-
-		button.appendChild(img);
-		return button;
-	}
-	
-	/**
-	 * Creates a Header element
-	 * @returns {HTMLDivElement}
-	*/
-  getHeader() {
+  /**
+   * Creates a Header element
+   * @param {() => void} onDeleteClick
+   * @returns {HTMLDivElement}
+   */
+  getHeader(onDeleteClick) {
     const header = document.createElement("div");
-		const h1 = document.createElement("h1");
-		const deleteButton = this.getDeleteButton();
-		
-		header.classList.add("header");
-		h1.classList.add("header__title");
+    const h1 = document.createElement("h1");
+    const button = new Button("Delete", onDeleteClick);
 
+    header.classList.add("header");
+    h1.classList.add("header__title");
     h1.textContent = "Student class";
-		header.append(h1, deleteButton);
-		
+
+    header.append(h1, button.element);
     return header;
   }
 }
