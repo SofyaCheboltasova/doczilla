@@ -2,34 +2,27 @@ import Row from "../Row/row";
 
 const headers = ["ID", "Name", "Surname", "Patronymic", "Datebirth", "Group"];
 
-/**
- * @typedef {Object} RowData
- * @property {number} id
- * @property {string} name
- * @property {string} surname
- * @property {string} patronymic
- * @property {string} datebirth
- * @property {number} group
- */
-
 export default class Table {
   element;
+  #callback;
   clickedRows = new Map();
 
   /**
-   * @param {RowData[]} data
+   * @param {Student[]} data
    * @param {() => {}} callback
    */
   constructor(data, callback) {
     this.element = this.getTable();
+    this.#callback = callback;
 
-    data.forEach((data) => this.addRow(data));
-    this.addButton(callback);
+    if (data.length) {
+      data.forEach((data) => this.addRow(data));
+    }
+    this.initAddButton();
   }
 
   /**
-   * Creates table and it's header.
-   *
+   * Creates table HTML element.
    * @returns {HTMLDivElement}
    */
   getTable() {
@@ -50,11 +43,19 @@ export default class Table {
   }
 
   /**
+   * Creates and fills a row for a table.
+   * @param {Student | null} data
+   */
+  addRow(data) {
+    const row = new Row(data, () => this.handleRowClick(row));
+    this.element.appendChild(row.element);
+  }
+
+  /**
    * Click handler for the row.
-   *
    * @param {Row} row
    */
-  handleClick(row) {
+  handleRowClick(row) {
     row.element.classList.toggle("clicked");
 
     this.clickedRows.has(row.getId())
@@ -63,25 +64,31 @@ export default class Table {
   }
 
   /**
-   * Creates and fills a row for a table.
-   *
-   * @param {RowData} rowData
+   * Creates Add button and set event handler for it
    */
-  addRow(rowData) {
-    const row = new Row(rowData);
-    row.element.addEventListener("click", () => this.handleClick(row));
-    this.element.appendChild(row.element);
+  initAddButton() {
+    const addButton = this.getAddButton();
+    addButton.addEventListener("click", () => this.handleAddClick());
   }
 
   /**
-   * Creates an Add button.
-   *
-   * @param {() => {}} callback
+   * Handles the click on the Add button
    */
-  addButton(callback) {
+  handleAddClick() {
+    this.element.removeChild(this.element.lastChild);
+    this.addRow(null);
+    this.initAddButton();
+
+    this.#callback();
+  }
+
+  /**
+   * Creates an Add button HTML element.
+   * @returns {HTMLDivElement}
+   */
+  getAddButton() {
     const button = document.createElement("div");
     button.classList.add("table__button");
-    button.addEventListener("click", callback);
 
     const plusSign = document.createElement("div");
     plusSign.classList.add("table__button_plus");
@@ -89,6 +96,7 @@ export default class Table {
     button.appendChild(plusSign);
 
     this.element.appendChild(button);
+    return button;
   }
 }
 

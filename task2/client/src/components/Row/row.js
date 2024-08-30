@@ -3,11 +3,16 @@ export default class Row {
   element;
 
   /**
-   * @param {import("../Table/table").RowData} data
+   * @param {Student | null} data
+   * @param {() => {}} onClick
    */
-  constructor(data) {
+  constructor(data, onClick) {
     this.#data = data;
-    this.element = this.getRow();
+    this.element = this.#getRow();
+
+    if (data) {
+      this.element.addEventListener("click", onClick);
+    }
   }
 
   /**
@@ -20,27 +25,46 @@ export default class Row {
 
   /**
    * Returns data.
-   * @returns {import("../Table/table").RowData}
+   * @returns {Student}
    */
   getData() {
     return this.#data;
   }
 
   /**
-   * Creates a new row.
    * @returns {HTMLUListElement}
    */
-  getRow() {
+  #getRow() {
     const wrapper = document.createElement("ul");
+    wrapper.classList.add("row");
 
+    if (this.#data) {
+      this.#fillRowWithData(wrapper);
+    } else {
+      this.#fillRowWithInputs(wrapper);
+    }
+    return wrapper;
+  }
+
+  #fillRowWithData(wrapper) {
     for (const key in this.#data) {
       const li = document.createElement("li");
       li.textContent = this.#data[key];
       wrapper.appendChild(li);
     }
+  }
 
-    wrapper.classList.add("row");
-    return wrapper;
+  #fillRowWithInputs(wrapper) {
+    for (let i = 0; i < 6; ++i) {
+      const li = document.createElement("li");
+      const input = document.createElement("input");
+      li.appendChild(input);
+      wrapper.appendChild(li);
+    }
+
+    const button = document.createElement("button");
+    button.textContent = "OK";
+    wrapper.appendChild(button);
   }
 }
 
