@@ -1,15 +1,50 @@
 export default class Input {
-  constructor() {
-    this.element = this.getInput();
+  /**
+   * @param {ColumnSchema} schema
+   */
+  constructor(schema) {
+    this.element = this.getInput(schema);
   }
 
-  getInput() {
+  /**
+   * @param {ColumnSchema} schema
+   */
+  getInput(schema) {
+    const { columnSize, columnType, isNullable } = schema;
     const input = document.createElement("input");
+    input.type = this.#getType(columnType);
+    input.required = !isNullable;
+
+    if (input.type === "text") {
+      input.maxLength = columnSize;
+    }
+
     input.classList.add("input");
-    input.required = true;
     input.addEventListener("change", () => this.unsetError());
 
     return input;
+  }
+
+  #getType(type) {
+    switch (type) {
+      case "varchar":
+      case "text":
+        return "text";
+      case "int4":
+        return "number";
+      case "date":
+        return "date";
+      default:
+        return "text";
+    }
+  }
+
+  /**
+   * Returns input's value
+   * @returns {String}
+   */
+  get value() {
+    return this.element.value;
   }
 
   /**
@@ -18,10 +53,6 @@ export default class Input {
    */
   isEmpty() {
     return this.element.value.trim() === "";
-  }
-
-  hightlightEmptyInput() {
-    this.isEmpty() ? this.setError() : this.unsetError();
   }
 
   setError() {

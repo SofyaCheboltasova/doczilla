@@ -2,21 +2,11 @@ import Form from "../Form/form";
 
 export default class Row {
   /**
-   * @param {Student | null} data
-   * @param {(() => void) | null} onRowClick
-   * @param {((student: Student) => void) | null} onConfirmClick
+   * @param {ColumnSchema[]} schema
    */
-  constructor(data, onRowClick, onConfirmClick) {
-    this.element = this.#getRow(data);
-
-    if (data) {
-      const content = this.#getRowContent(data);
-      this.element.appendChild(content);
-      onRowClick && this.element.addEventListener("click", onRowClick);
-    } else {
-      const form = new Form(onConfirmClick);
-      this.element.appendChild(form.element);
-    }
+  constructor(schema) {
+    this.schema = schema;
+    this.element = this.#getRow();
   }
 
   /**
@@ -34,7 +24,7 @@ export default class Row {
    * @param {Student} data
    * @returns {HTMLUListElement}
    */
-  #getRowContent(data) {
+  setFilledRow(data) {
     const ul = document.createElement("ul");
     ul.classList.add("row__ul");
 
@@ -44,7 +34,19 @@ export default class Row {
       ul.append(li);
     }
 
-    return ul;
+    this.element.appendChild(ul);
+  }
+
+  /**
+   * Creates an empty row with a form
+   * @param {() => void} onConfirmClick
+   */
+  setEmptyRow(onConfirmClick) {
+    const form = new Form(this.schema, (data) => {
+      this.element.removeChild(form.element);
+      onConfirmClick(data);
+    });
+    this.element.appendChild(form.element);
   }
 }
 

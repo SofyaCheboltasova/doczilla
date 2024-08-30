@@ -1,15 +1,19 @@
 import Input from "../Input/input";
 import Button from "../Button/button";
 
+import "../../types/types";
 export default class Form {
   /**
-   * @param {() => void} onSubmit
+   * @param {ColumnSchema[]} schema
+   * @param {(data: StudentPost) => void} onSubmit
    */
-  constructor(onSubmit) {
+  constructor(schema, onSubmit) {
     this.inputs = [];
     this.element = this.getForm();
 
-    this.#createSubmitButton(onSubmit);
+    this.setInputs(schema);
+
+    this.#setSubmitButton(onSubmit);
   }
 
   /**
@@ -18,40 +22,69 @@ export default class Form {
    */
   getForm() {
     const form = document.createElement("div");
-    const ul = document.createElement("ul");
-
     form.classList.add("form");
-    ul.classList.add("row__ul");
-
-    for (let i = 0; i < 6; ++i) {
-      const li = document.createElement("li");
-      ul.append(li);
-
-      if (!i) continue;
-
-      const input = new Input();
-      this.inputs.push(input);
-      li.append(input.element);
-    }
-
-    form.appendChild(ul);
     return form;
   }
 
   /**
-   * Creates a submit button
-   * @param {(data: String[]) => void} onSubmit
+   * Fill form with inputs
+   * @param {ColumnSchema[]} schema
    */
-  #createSubmitButton(onSubmit) {
+  setInputs(schema) {
+    const ul = document.createElement("ul");
+    ul.classList.add("row__ul");
+    this.element.appendChild(ul);
+
+    schema.forEach((column) => {
+      const li = document.createElement("li");
+      ul.append(li);
+
+      if (column.columnName.toLowerCase() === "id") {
+        return;
+      }
+
+      const input = this.#getInput(column);
+      li.append(input);
+    });
+  }
+
+  /**
+   * Creates an input
+   * @param {ColumnSchema} schema
+   */
+  #getInput(schema) {
+    const input = new Input(schema);
+    this.inputs.push(input);
+    return input.element;
+  }
+
+  /**
+   * Creates a submit button
+   * @param {(data: StudentPost) => void} onSubmit
+   */
+  #setSubmitButton(onSubmit) {
     const button = new Button("Submit", () => this.#handleSubmit(onSubmit));
     this.element.append(button.element);
   }
 
   /**
-   * Checks correctness of the inputs before calling the confirm handler
-   * @param {(data: String[]) => void} onSubmit
+   * Checks correctness and cast types
+   * @param {(data: StudentPost) => void} onSubmit
    */
   #handleSubmit(onSubmit) {
+    if (!this.#isAllInputsFilled()) {
+      return;
+    }
+    const data = this.inputs.map((input) => input.value);
+    const castTypeData = this.#castType(data);
+    onSubmit(castTypeData);
+  }
+
+  /**
+   * Sets error if input is empty
+   * @returns {boolean}
+   */
+  #isAllInputsFilled() {
     let allFilled = true;
 
     this.inputs.forEach((input) => {
@@ -63,10 +96,23 @@ export default class Form {
       }
     });
 
-    if (allFilled) {
-      const data = this.inputs.map((input) => input.value);
-      onSubmit(data);
-    }
+    return allFilled;
+  }
+
+  /**
+   * Cast inputs' values to StudentPost type
+   * @param {String[]} data
+   * @return {StudentPost}
+   */
+  #castType(data) {
+    const castData = {
+      name: data[0],
+      surname: data[1],
+      patronymic: data[2],
+      birthdate: new Date(data[3]).toISOString(),
+      groupid: parseInt(data[4], 10),
+    };
+    return castData;
   }
 }
 

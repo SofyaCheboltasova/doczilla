@@ -30,9 +30,20 @@ export default class ApiRequests {
    */
   async postStudent(student) {
     const path = Api.getUrl("students");
-    const init = Api.getInit("POST");
-
+    const init = Api.getInit("POST", student);
     await Api.fetch(path, init);
+  }
+
+  /**
+   * Makes a request to get table schema
+   * @returns {ColumnSchema[]}
+   */
+  async getSchema() {
+    const path = Api.getUrl("students/schema");
+    const init = Api.getInit("GET");
+
+    const schema = await Api.fetch(path, init);
+    return schema;
   }
 }
 

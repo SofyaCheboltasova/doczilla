@@ -13,9 +13,9 @@ class Main {
 
   /**
    * Handle click on add button
-   * @param {Student} student
+   * @param {StudentPost} student
    */
-  addStudent(student) {
+  postStudent(student) {
     this.api.postStudent(student);
   }
 
@@ -33,15 +33,31 @@ class Main {
    * Returns all students
    * @returns {Student[] | []}
    */
-  getStudents() {
+  async getStudents() {
     const students = this.api.getAllStudents();
     return students;
   }
 
-  main() {
-    const students = this.getStudents();
+  /**
+   * Returns table schema
+   * @returns {ColumnSchema[]}
+   */
+  async getSchema() {
+    const schema = this.api.getSchema();
+    return schema;
+  }
+
+  async main() {
+    const students = await this.getStudents();
+    const schema = await this.getSchema();
+
+    const tableData = {
+      students: students,
+      schema: schema,
+    };
+
     const header = new Header(() => this.deleteStudent());
-    const table = new Table(students, (student) => this.addStudent(student));
+    const table = new Table(tableData, (student) => this.postStudent(student));
     const page = new Page(header.element, table.element);
 
     document.body.appendChild(page.element);

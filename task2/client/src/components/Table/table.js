@@ -6,15 +6,21 @@ const headers = ["ID", "Name", "Surname", "Patronymic", "Datebirth", "Group"];
 
 export default class Table {
   /**
-   * @param {Student[]} students
+   * @param {TableData} data
    * @param {() => void} onConfirmClick
    */
-  constructor(students, onConfirmClick) {
+  constructor(data, onConfirmClick) {
+    this.students = data.students;
+    this.schema = data.schema;
     this.clickedRows = new Map();
+
     this.element = this.getTable();
 
-    if (students.length) {
-      students.forEach((student) => this.addFilledRow(student));
+    if (this.students.length) {
+      this.students.forEach((student) => {
+        const row = this.getNewRow();
+        row.setFilledRow(student, (student) => this.onRowClick(student));
+      });
     }
 
     this.createAddButton(onConfirmClick);
@@ -42,12 +48,13 @@ export default class Table {
   }
 
   /**
-   * Creates a row filled with data.
-   * @param {Student} data
+   * Create Row element
+   * @returns {Row}
    */
-  addFilledRow(data) {
-    const row = new Row(data, (data) => this.onRowClick(data), null);
+  getNewRow() {
+    const row = new Row(this.schema);
     this.element.appendChild(row.element);
+    return row;
   }
 
   /**
@@ -77,17 +84,9 @@ export default class Table {
    */
   handleAddClick(onConfirmClick) {
     this.element.removeChild(this.element.lastChild);
-    this.addEmptyRow(onConfirmClick);
+    const row = this.getNewRow();
+    row.setEmptyRow(onConfirmClick);
     this.createAddButton();
-  }
-
-  /**
-   * Creates an empty row with confirm button
-   * @param {() => void} onConfirmClick
-   */
-  addEmptyRow(onConfirmClick) {
-    const row = new Row(null, null, onConfirmClick);
-    this.element.appendChild(row.element);
   }
 }
 

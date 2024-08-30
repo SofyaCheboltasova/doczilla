@@ -10,7 +10,7 @@ export default class Api {
       const data = await response.json();
       return data;
     } catch (e) {
-      console.error("Failed to fetch", error);
+      console.error("Failed to fetch", e);
     }
   }
 
@@ -18,13 +18,19 @@ export default class Api {
     return `${Api.baseURL}/${uri}`;
   }
 
-  static getInit(method) {
+  static getInit(method, body = null) {
     const init = {
       method: method,
       headers: {
         "Content-Type": "application/json",
       },
     };
+    if (
+      ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase()) &&
+      body
+    ) {
+      init.body = JSON.stringify(body);
+    }
     return init;
   }
 }
