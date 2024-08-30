@@ -1,70 +1,68 @@
+import Button from "../Button/button";
+
 export default class Row {
-  #data;
   element;
 
   /**
    * @param {Student | null} data
-   * @param {() => {}} onClick
+   * @param {() => {}} onRowClick
+   * @param {() => {}} onButtonClick
    */
-  constructor(data, onClick) {
-    this.#data = data;
-    this.element = this.#getRow();
+  constructor(data, onRowClick, onButtonClick) {
+    this.element = this.#getRow(data, onButtonClick);
 
     if (data) {
-      this.element.addEventListener("click", onClick);
+      this.element.addEventListener("click", onRowClick);
     }
   }
 
   /**
-   * Returns data id.
-   * @returns {number}
+   * @param {Student | null} data
+   * @param {() => {}} onButtonClick
+   *
+   * @returns {HTMLDivElement}
    */
-  getId() {
-    return this.#data.id;
-  }
+  #getRow(data, onButtonClick) {
+    const row = document.createElement("div");
+    row.classList.add("row");
 
-  /**
-   * Returns data.
-   * @returns {Student}
-   */
-  getData() {
-    return this.#data;
-  }
+    const ul = document.createElement("ul");
+    ul.classList.add("row__ul");
+    row.appendChild(ul);
 
-  /**
-   * @returns {HTMLUListElement}
-   */
-  #getRow() {
-    const wrapper = document.createElement("ul");
-    wrapper.classList.add("row");
-
-    if (this.#data) {
-      this.#fillRowWithData(wrapper);
+    if (data) {
+      this.#fillRowWithData(data, ul);
     } else {
-      this.#fillRowWithInputs(wrapper);
+      this.#fillRowWithInputs(ul);
+      this.#setButton(row, onButtonClick);
     }
-    return wrapper;
+    return row;
   }
 
-  #fillRowWithData(wrapper) {
-    for (const key in this.#data) {
+  #fillRowWithData(data, ul) {
+    for (const key in data) {
       const li = document.createElement("li");
-      li.textContent = this.#data[key];
-      wrapper.appendChild(li);
+      li.textContent = data[key];
+      ul.appendChild(li);
     }
   }
 
-  #fillRowWithInputs(wrapper) {
+  #fillRowWithInputs(ul) {
     for (let i = 0; i < 6; ++i) {
       const li = document.createElement("li");
       const input = document.createElement("input");
-      li.appendChild(input);
-      wrapper.appendChild(li);
-    }
 
-    const button = document.createElement("button");
-    button.textContent = "OK";
-    wrapper.appendChild(button);
+      input.required = true;
+      input.classList.add("row__input");
+
+      li.appendChild(input);
+      ul.appendChild(li);
+    }
+  }
+
+  #setButton(row, onButtonClick) {
+    const button = new Button("OK", () => onButtonClick());
+    row.appendChild(button.element);
   }
 }
 

@@ -1,19 +1,30 @@
 .row {
-  display: grid;
-  grid-template-columns: 0.5fr repeat(4, 1fr) 0.1fr;
-  gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
-  border: 1px solid white;
-  border-radius: 10px;
-  padding: 2rem;
+	gap: 3rem;
+	border: 1px solid white;
+	border-radius: 10px;
+	padding: 2rem;
+}
 
-  &:hover {
-    background-color: #e0e0e02e;
-    cursor: pointer;
-  }
+.row__ul {
+	display: grid;
+	justify-items: center;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 2rem;
 }
 
 .clicked {
-  background-color: #e0e0e02e;
+	background-color: #e0e0e02e;
 }
 
+.row__input {
+	background-color: transparent;
+	width: 100%;
+	border: 1px solid white;
+	color: white;
+	padding: 1rem;
+	border-radius: 10px;
+}
