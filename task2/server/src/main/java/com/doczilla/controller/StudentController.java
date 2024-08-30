@@ -24,9 +24,17 @@ public class StudentController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        addCorsHeaders(exchange);
+
         String path = exchange.getRequestURI().getPath();
 
+        if ("OPTIONS".equals(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(204, -1);
+            return;
+        }
+
         if (path.equals("/students") && "GET".equals(exchange.getRequestMethod())) {
+            System.out.println("allalala");
             handleGet(exchange);
         } else if (path.equals("/students") && "DELETE".equals(exchange.getRequestMethod())) {
             handleDelete(exchange);
@@ -37,8 +45,15 @@ public class StudentController implements HttpHandler {
         }
     }
 
+    private void addCorsHeaders(HttpExchange exchange) {
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+    }
+
     protected void handleGet(HttpExchange exchange) throws IOException {
         List<Student> students = this.studentService.getStudents();
+        System.out.println(students);
         String response = gson.toJson(students);
 
         exchange.getResponseHeaders().set("Content-Type", "application/json");

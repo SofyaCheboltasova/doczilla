@@ -9,7 +9,7 @@ import com.doczilla.model.Student;
 
 public class StudentRepository {
     public List<Student> getStudents() {
-        String query = "SELECT * FROM students ORDER BY id";
+        String query = "SELECT * FROM student ORDER BY id";
         try (java.sql.Connection connection = DatabaseConfig.getConnection();
                 java.sql.PreparedStatement preparedStatement = connection.prepareStatement(query);
                 java.sql.ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -25,14 +25,16 @@ public class StudentRepository {
                 student.setGroup(resultSet.getInt("group"));
                 students.add(student);
             }
+            System.out.println("repo:" + students);
             return students;
         } catch (SQLException e) {
+            System.out.println("repo error:" + e);
             throw new RuntimeException(e.getMessage());
         }
     }
 
     public void deleteStudent(int id) {
-        String query = "DELETE FROM students WHERE id = ?";
+        String query = "DELETE FROM student WHERE id = ?";
 
         try (java.sql.Connection connection = DatabaseConfig.getConnection();
                 java.sql.PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -47,7 +49,7 @@ public class StudentRepository {
     }
 
     public void postStudent(Student student) {
-        String query = "INSERT INTO students (name, surname, patronomyc, birthdate, group) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO student (name, surname, patronomyc, birthdate, group) VALUES (?, ?, ?, ?, ?)";
 
         try (java.sql.Connection connection = DatabaseConfig.getConnection();
                 java.sql.PreparedStatement preparedStatement = connection.prepareStatement(query)) {
