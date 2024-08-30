@@ -2,6 +2,8 @@ import "./index.scss";
 
 import "./types/types";
 import Page from "./components/Page/page";
+import Header from "./components/Header/header";
+import Table from "./components/Table/table";
 import ApiRequests from "./api/apiRequests";
 
 class Main {
@@ -11,17 +13,21 @@ class Main {
 
   /**
    * Handle click on add button
-   * @returns {Student[]}
+   * @param {Student} student
    */
-  handleAddClick() {
+  addStudent(student) {
     this.api.postStudent(student);
   }
 
   /**
    * Handle click on delete button
-   * @returns {Student[]}
+   * @param {Student[]} students
    */
-  handleDeleteClick() {}
+  deleteStudent(students) {
+    students.forEach((student) => {
+      this.api.deleteStudent(student.id);
+    });
+  }
 
   /**
    * Returns all students
@@ -34,11 +40,10 @@ class Main {
 
   main() {
     const students = this.getStudents();
-    const page = new Page(
-      students,
-      this.handleAddClick,
-      this.handleDeleteClick
-    );
+    const header = new Header(() => this.deleteStudent());
+    const table = new Table(students, (student) => this.addStudent(student));
+    const page = new Page(header.element, table.element);
+
     document.body.appendChild(page.element);
   }
 }
