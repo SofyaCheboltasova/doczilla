@@ -1,9 +1,5 @@
 export default class Api {
-  static baseURL;
-
-  constructor(baseURL) {
-    Api.baseURL = baseURL;
-  }
+  static baseURL = "http://localhost:8000";
 
   static async fetch(url, init) {
     try {
