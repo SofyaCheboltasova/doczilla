@@ -1,7 +1,6 @@
 .row {
-  display: flex;
-  justify-content: space-between;
-
+  display: grid;
+  grid-template-columns: 0.5fr repeat(4, 1fr) 0.1fr;
   gap: 1rem;
 
   border: 1px solid white;
@@ -12,5 +11,9 @@
     background-color: #e0e0e02e;
     cursor: pointer;
   }
+}
+
+.clicked {
+  background-color: #e0e0e02e;
 }
 

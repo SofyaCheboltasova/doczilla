@@ -3,13 +3,33 @@ export default class Row {
   element;
 
   /**
-   * @param {Object} data
+   * @param {import("../Table/table").RowData} data
    */
   constructor(data) {
     this.#data = data;
     this.element = this.getRow();
   }
 
+  /**
+   * Returns data id.
+   * @returns {number}
+   */
+  getId() {
+    return this.#data.id;
+  }
+
+  /**
+   * Returns data.
+   * @returns {import("../Table/table").RowData}
+   */
+  getData() {
+    return this.#data;
+  }
+
+  /**
+   * Creates a new row.
+   * @returns {HTMLUListElement}
+   */
   getRow() {
     const wrapper = document.createElement("ul");
 
