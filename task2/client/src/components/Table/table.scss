@@ -6,7 +6,8 @@
 }
 
 .table__header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.5fr repeat(4, 1fr) 0.1fr;
   gap: 1rem;
 
   justify-content: space-between;
@@ -14,5 +15,24 @@
   padding: 2rem;
 
   font-weight: 700;
+}
+
+.table__button {
+  border: 1px solid white;
+  border-radius: 10px;
+  background-color: #e0e0e02e;
+
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background-color: #e0e0e068;
+  }
+}
+
+.table__button_plus {
+  font-size: 2.5rem;
+  color: white;
+  line-height: 2;
 }
 
