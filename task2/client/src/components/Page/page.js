@@ -31,12 +31,16 @@ const students = [
 export default class Page {
   #header;
   #table;
-	page;
+	element;
 	
   constructor() {
 		this.#header = new Header();
-		this.#table = new Table(students);
-    this.page = this.getPage();
+		this.#table = new Table(students, this.handleAddClick);
+    this.element = this.getPage();
+	}
+
+	handleAddClick() {
+		
 	}
 
   getPage() {
