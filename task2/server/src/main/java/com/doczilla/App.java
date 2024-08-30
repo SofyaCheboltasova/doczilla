@@ -1,5 +1,9 @@
 package com.doczilla;
 
+import java.io.IOException;
+
+import com.doczilla.server.Server;
+
 /**
  * Hello world!
  */
@@ -9,10 +13,14 @@ public final class App {
 
     /**
      * Says hello to the world.
-     * 
+     *
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        try {
+            Server.main(args);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
