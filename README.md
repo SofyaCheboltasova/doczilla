@@ -1,12 +1,13 @@
 # Проект
 
-Этот репозиторий содержит два независимых приложения: `task1` и `task2`. Каждое из них имеет свою собственную конфигурацию Docker и может быть запущено отдельно.
+Этот репозиторий содержит два независимых приложения: `task1` и `task2`.
 
-## Запуск `task1`
+## Запуск `task1`:
 
 ```bash
 cd task1
-docker-compose up --build
+javac Main.java
+java Main
 ```
 
 ## Запуск `task2`
@@ -30,4 +31,3 @@ docker-compose up --build
 docker-compose down
 
 ```
-
