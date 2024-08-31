@@ -7,8 +7,11 @@ export default class Api {
       if (!response.ok) {
         throw new Error(response.text);
       }
-      const data = await response.json();
-      return data;
+
+      if (response.status !== 204) {
+        const data = await response.json();
+        return data;
+      }
     } catch (e) {
       console.error("Failed to fetch", e);
     }

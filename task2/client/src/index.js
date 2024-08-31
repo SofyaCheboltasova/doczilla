@@ -25,16 +25,16 @@ class Main {
    */
   deleteStudent() {
     const students = this.table.clickedRows;
-    const studentsArray = Array.from(students.values());
+    const studentsArray = Array.from(students.keys());
     if (!studentsArray.length) {
       return;
     }
 
-    studentsArray.forEach((student) => {
-      this.api.deleteStudent(student.id);
+    studentsArray.forEach((id) => {
+      this.api.deleteStudent(id);
     });
 
-    this.table.deleteRows(Array.from(students.keys()));
+    this.table.deleteRows(studentsArray);
   }
 
   /**

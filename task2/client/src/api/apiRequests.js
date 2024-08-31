@@ -19,7 +19,7 @@ export default class ApiRequests {
    */
   async deleteStudent(id) {
     const path = Api.getUrl("students");
-    const init = Api.getInit("DELETE");
+    const init = Api.getInit("DELETE", id);
 
     await Api.fetch(path, init);
   }
