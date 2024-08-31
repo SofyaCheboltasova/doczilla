@@ -42,9 +42,10 @@ export default class Row {
    * @param {() => void} onConfirmClick
    */
   setEmptyRow(onConfirmClick) {
-    const form = new Form(this.schema, (data) => {
+    const form = new Form(this.schema, async (data) => {
       this.element.removeChild(form.element);
-      onConfirmClick(data);
+      const student = await onConfirmClick(data);
+      this.setFilledRow(student);
     });
     this.element.appendChild(form.element);
   }

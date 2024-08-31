@@ -31,7 +31,8 @@ export default class ApiRequests {
   async postStudent(student) {
     const path = Api.getUrl("students");
     const init = Api.getInit("POST", student);
-    await Api.fetch(path, init);
+    const addedStudent = await Api.fetch(path, init);
+    return addedStudent;
   }
 
   /**

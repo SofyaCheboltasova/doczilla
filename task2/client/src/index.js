@@ -15,8 +15,9 @@ class Main {
    * Handle click on add button
    * @param {StudentPost} student
    */
-  postStudent(student) {
-    this.api.postStudent(student);
+  async postStudent(student) {
+    const addedStudent = await this.api.postStudent(student);
+    return addedStudent;
   }
 
   /**
