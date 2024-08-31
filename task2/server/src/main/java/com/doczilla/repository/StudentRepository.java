@@ -71,8 +71,6 @@ public class StudentRepository {
             preparedStatement.setInt(5, student.getGroup());
             preparedStatement.executeUpdate();
 
-            System.out.println("repo:" + preparedStatement);
-
         } catch (SQLException e) {
             System.out.println("repo err:" + e.getMessage());
             throw new RuntimeException(e.getMessage());

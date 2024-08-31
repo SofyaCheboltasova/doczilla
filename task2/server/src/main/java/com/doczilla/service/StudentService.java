@@ -22,10 +22,10 @@ public class StudentService {
         repository.deleteStudent(id);
     }
 
-    public void postStudent(Student student) throws SQLException {
-        System.out.println("service:" + student);
-
+    public Student postStudent(Student student) throws SQLException {
         repository.postStudent(student);
+        List<Student> students = getStudents();
+        return students.get(students.size() - 1);
     }
 
     public List<Map<String, Object>> getStudentSchema() throws SQLException {

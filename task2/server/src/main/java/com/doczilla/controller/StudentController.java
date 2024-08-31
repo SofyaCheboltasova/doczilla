@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.doczilla.model.Student;
 import com.doczilla.service.StudentService;
 
@@ -43,7 +43,6 @@ public class StudentController implements HttpHandler {
         } else if (path.equals("/students") && "DELETE".equals(exchange.getRequestMethod())) {
             handleDelete(exchange);
         } else if (path.equals("/students") && "POST".equals(exchange.getRequestMethod())) {
-            System.out.println("handle post");
             handlePost(exchange);
         } else if (path.equals("/students/schema") && "GET".equals(exchange.getRequestMethod())) {
             try {
@@ -90,24 +89,18 @@ public class StudentController implements HttpHandler {
         String requestBody = new BufferedReader(new InputStreamReader(requestBodyStream))
                 .lines()
                 .collect(Collectors.joining("\n"));
-
-        System.out.println("Request Body: " + requestBody);
-
         try {
             Student student = gson.fromJson(requestBody, Student.class);
-            System.out.println("controller:" + student);
+            Student newStudent = studentService.postStudent(student);
+            String jsonResponse = gson.toJson(newStudent);
+            byte[] responseBytes = jsonResponse.getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(201, responseBytes.length);
 
-            studentService.postStudent(student);
-            exchange.sendResponseHeaders(201, -1);
-        } catch (SQLException e) {
-            System.out.println("handle post error");
-            exchange.sendResponseHeaders(400, -1);
-        } catch (JsonSyntaxException e) {
-            System.out.println("JSON Parsing Error: " + e.getMessage());
-            exchange.sendResponseHeaders(400, -1);
+            try (OutputStream responseBodyStream = exchange.getResponseBody()) {
+                responseBodyStream.write(responseBytes);
+            }
         } catch (Exception e) {
-            System.out.println("Unhandled Error: " + e.getMessage());
-            exchange.sendResponseHeaders(500, -1);
+            exchange.sendResponseHeaders(400, -1);
         }
     }
 
