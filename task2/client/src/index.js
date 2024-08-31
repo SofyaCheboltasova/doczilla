@@ -22,12 +22,19 @@ class Main {
 
   /**
    * Handle click on delete button
-   * @param {Student[]} students
    */
-  deleteStudent(students) {
-    students.forEach((student) => {
+  deleteStudent() {
+    const students = this.table.clickedRows;
+    const studentsArray = Array.from(students.values());
+    if (!studentsArray.length) {
+      return;
+    }
+
+    studentsArray.forEach((student) => {
       this.api.deleteStudent(student.id);
     });
+
+    this.table.deleteRows(Array.from(students.keys()));
   }
 
   /**
@@ -57,9 +64,9 @@ class Main {
       schema: schema,
     };
 
-    const header = new Header(() => this.deleteStudent());
-    const table = new Table(tableData, (student) => this.postStudent(student));
-    const page = new Page(header.element, table.element);
+    this.header = new Header(() => this.deleteStudent());
+    this.table = new Table(tableData, (student) => this.postStudent(student));
+    const page = new Page(this.header.element, this.table.element);
 
     document.body.appendChild(page.element);
   }

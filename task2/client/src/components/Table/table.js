@@ -13,13 +13,14 @@ export default class Table {
     this.students = data.students;
     this.schema = data.schema;
     this.clickedRows = new Map();
+    // this.onRowClick = this.onRowClick.bind(this);
 
     this.element = this.getTable();
 
     if (this.students.length) {
       this.students.forEach((student) => {
         const row = this.getNewRow();
-        row.setFilledRow(student, (student) => this.onRowClick(student));
+        row.setFilledRow(student);
       });
     }
 
@@ -52,9 +53,16 @@ export default class Table {
    * @returns {Row}
    */
   getNewRow() {
-    const row = new Row(this.schema);
+    const row = new Row(this.schema, (student) => this.onRowClick(student));
     this.element.appendChild(row.element);
     return row;
+  }
+
+  deleteRows(rows) {
+    rows.forEach((row) => {
+      const selectedRow = document.getElementById(row);
+      selectedRow.remove();
+    });
   }
 
   /**
@@ -62,8 +70,6 @@ export default class Table {
    *  @param {Student} data
    */
   onRowClick(data) {
-    this.element.classList.toggle("clicked");
-
     this.clickedRows.has(data.id)
       ? this.clickedRows.delete(data.id)
       : this.clickedRows.set(data.id, data);

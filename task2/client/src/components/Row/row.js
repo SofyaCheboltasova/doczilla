@@ -3,9 +3,11 @@ import Form from "../Form/form";
 export default class Row {
   /**
    * @param {ColumnSchema[]} schema
+   * @param {(student: Student) => void} eventListener
    */
-  constructor(schema) {
+  constructor(schema, eventListener) {
     this.schema = schema;
+    this.eventListener = eventListener;
     this.element = this.#getRow();
   }
 
@@ -34,7 +36,13 @@ export default class Row {
       ul.append(li);
     }
 
+    this.element.id = data.id;
     this.element.appendChild(ul);
+
+    this.element.addEventListener("click", () => {
+      this.element.classList.toggle("clicked");
+      this.eventListener(data);
+    });
   }
 
   /**
