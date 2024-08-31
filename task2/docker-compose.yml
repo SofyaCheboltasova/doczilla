@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sofya2002
+      POSTGRES_DB: doczillatask2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: task2/server/Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  client:
+    build:
+      context: .
+      dockerfile: task2/client/Dockerfile
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+
