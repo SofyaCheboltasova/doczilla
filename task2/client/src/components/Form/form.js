@@ -109,7 +109,7 @@ export default class Form {
       name: data[0],
       surname: data[1],
       patronymic: data[2],
-      birthdate: new Date(data[3]).toISOString(),
+      birthdate: data[3].substring(0, 10),
       groupid: parseInt(data[4], 10),
     };
     return castData;

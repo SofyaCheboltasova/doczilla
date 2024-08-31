@@ -14,6 +14,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.doczilla.model.Student;
 import com.doczilla.service.StudentService;
 
@@ -100,8 +101,13 @@ public class StudentController implements HttpHandler {
             exchange.sendResponseHeaders(201, -1);
         } catch (SQLException e) {
             System.out.println("handle post error");
-
             exchange.sendResponseHeaders(400, -1);
+        } catch (JsonSyntaxException e) {
+            System.out.println("JSON Parsing Error: " + e.getMessage());
+            exchange.sendResponseHeaders(400, -1);
+        } catch (Exception e) {
+            System.out.println("Unhandled Error: " + e.getMessage());
+            exchange.sendResponseHeaders(500, -1);
         }
     }
 

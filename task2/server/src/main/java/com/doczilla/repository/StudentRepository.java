@@ -1,6 +1,9 @@
 package com.doczilla.repository;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,24 +16,28 @@ import com.doczilla.model.Student;
 
 public class StudentRepository {
     public List<Student> getStudents() {
-        String query = "SELECT * FROM student ORDER BY id";
-        try (java.sql.Connection connection = DatabaseConfig.getConnection();
-                java.sql.PreparedStatement preparedStatement = connection.prepareStatement(query);
-                java.sql.ResultSet resultSet = preparedStatement.executeQuery()) {
+        String query = "SELECT id, name, surname, patronymic, TO_CHAR(birthdate, 'YYYY-MM-DD') AS birthdate, groupid FROM student ORDER BY id";
+        try (Connection connection = DatabaseConfig.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
             List<Student> students = new ArrayList<>();
+
             while (resultSet.next()) {
                 Student student = new Student();
+                student.setId(resultSet.getInt("id"));
                 student.setName(resultSet.getString("name"));
                 student.setSurname(resultSet.getString("surname"));
                 student.setPatronymic(resultSet.getString("patronymic"));
-                student.setBirthdate(resultSet.getDate("birthdate"));
+                String birthdateString = resultSet.getString("birthdate");
+                student.setBirthdate(birthdateString);
+
                 student.setGroup(resultSet.getInt("groupid"));
                 students.add(student);
             }
             return students;
         } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Error retrieving students from database: " + e.getMessage(), e);
         }
     }
 
@@ -56,15 +63,18 @@ public class StudentRepository {
             preparedStatement.setString(1, student.getName());
             preparedStatement.setString(2, student.getSurname());
             preparedStatement.setString(3, student.getPatronymic());
-            preparedStatement.setDate(4, student.getBirthdate());
+
+            String birthdateString = student.getBirthdate();
+            Date sqlDate = Date.valueOf(birthdateString);
+            preparedStatement.setDate(4, sqlDate);
+
             preparedStatement.setInt(5, student.getGroup());
             preparedStatement.executeUpdate();
 
             System.out.println("repo:" + preparedStatement);
 
         } catch (SQLException e) {
-            System.out.println("repo err:" + e);
-
+            System.out.println("repo err:" + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
