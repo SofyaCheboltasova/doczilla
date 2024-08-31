@@ -75,9 +75,11 @@ public class StudentController implements HttpHandler {
 
     protected void handleDelete(HttpExchange exchange) throws IOException {
         try {
-            Student student = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Student.class);
-            studentService.deleteStudent(student.getId());
-            exchange.sendResponseHeaders(200, -1);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
+            String idString = bufferedReader.readLine();
+            int id = Integer.parseInt(idString.trim());
+            studentService.deleteStudent(id);
+            exchange.sendResponseHeaders(204, -1);
         } catch (SQLException e) {
             exchange.sendResponseHeaders(404, -1);
         }
