@@ -1,2 +1,0 @@
-SERVER:
-in server/: mvn clean && mvn package && mvn exec:java
